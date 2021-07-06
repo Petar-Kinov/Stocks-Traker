@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Stock Analyzer</string>
+    <string name="revenue_growth">Revenue Growth :" "</string>
+    <string name="average_free_cash_flow">"Average Free Cash Flow : " "</string>
+    <string name="free_cash_flow_growth">Free Cash Flow Growth : " "</string>
+    <string name="company_name">Company Name : " "</string>
+    <string name="company_industry">Company Industry : " "</string>
+    <string name="market_cap">Market Cap : " "</string>
+    <string name="p_e_ratio">P/E Ratio : " "</string>
+    <string name="share_price">Price : " "</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="company_logo">company logo</string>
+    <string name="price_prediction">Price prediction : " "</string>
+    <string name="past_5_years">Past 5 Years</string>
+    <string name="next_5_years_growth">Next 5 Years Growth : " "</string>
+    <string name="analysis">Analysis</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorBackground">#DDDDDD</color>
+    <color name="colorAccent">#222831</color>
+    <color name="navigationBar">#30475E</color>
+    <color name="colorText">#132C33</color>
+</resources>
