@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public class OverviewFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String TAG = "tag";
 
     public OverviewFragment() {
         // Required empty public constructor
@@ -63,8 +65,8 @@ public class OverviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
-        TextView textView = view.findViewById(R.id.textView);
-        textView.setSelected(true);
+//        TextView textView = view.findViewById(R.id.textView);
+//        textView.setSelected(true);
         try {
 //            textView.setText(getArguments().getString("TEST"));
         } catch (Exception e) {
@@ -72,5 +74,8 @@ public class OverviewFragment extends Fragment {
         }
 
         return view;
+    }
+    public void fragmentMethod(){
+        Log.d(TAG, "fragmentMethod: called");
     }
 }
