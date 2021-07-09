@@ -1,4 +1,4 @@
-package com.example.stonks.Adapter;
+package com.example.stonks.Adapters;
 
 
 import androidx.annotation.NonNull;
@@ -8,10 +8,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.stonks.Fragments.CompanyFragment;
 import com.example.stonks.Fragments.OverviewFragment;
-import com.example.stonks.Fragments.TestFragment1;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
@@ -28,18 +26,12 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         if (position == 0) {
             return new OverviewFragment();
         }
-        return new TestFragment1();
+        return new CompanyFragment();
     }
-
 
     @Override
     public int getItemCount() {
         return 2;
     }
-
-    public void addFragments(Fragment fragment){
-        fragments.set(0, new CompanyFragment());
-    }
-
 
 }

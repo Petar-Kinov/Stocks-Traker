@@ -1,4 +1,4 @@
-package com.example.stonks.RequestClasses;
+package com.example.stonks.RequestClasses.FinantialModelingPrep;
 
 
 public class Growth {
@@ -25,6 +25,7 @@ public class Growth {
 
     private double revenueGrowth;
     private double freeCashFlowGrowth;
+    private double netIncomeGrowth;
 
     public double getFreeCashFlowGrowth() {
         return freeCashFlowGrowth;
@@ -32,5 +33,21 @@ public class Growth {
 
     public double getRevenueGrowth() {
         return revenueGrowth;
+    }
+
+    public void setRevenueGrowth(double revenueGrowth) {
+        this.revenueGrowth = revenueGrowth;
+    }
+
+    public void setFreeCashFlowGrowth(double freeCashFlowGrowth) {
+        this.freeCashFlowGrowth = freeCashFlowGrowth;
+    }
+
+    public double getNetIncomeGrowth() {
+        return netIncomeGrowth;
+    }
+
+    public void setNetIncomeGrowth(double netIncomeGrowth) {
+        this.netIncomeGrowth = netIncomeGrowth;
     }
 }

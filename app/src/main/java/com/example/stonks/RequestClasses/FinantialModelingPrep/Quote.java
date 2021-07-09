@@ -1,4 +1,4 @@
-package com.example.stonks.RequestClasses;
+package com.example.stonks.RequestClasses.FinantialModelingPrep;
 
 public class Quote {
 
