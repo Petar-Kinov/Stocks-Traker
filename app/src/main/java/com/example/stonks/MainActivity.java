@@ -1,7 +1,6 @@
 package com.example.stonks;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -9,31 +8,24 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
 
 import com.example.stonks.Adapters.ViewPagerAdapter;
 import com.example.stonks.Repository.CompanyData;
+import com.example.stonks.ViewModels.CompanyViewModel;
+import com.example.stonks.ViewModels.DailyMoversViewModel;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
     SearchView searchView;
     Button homeButton;
-    private int responses = 0;
-    private final int responsesNeeded = 5;
-    private String companyName, companyIndustry, revenueGrowth, freeCashFlowGrowth, freeCashFlowAverage, image, price, marketCap, pe ;
-    private Bundle dataBundle;
 
-    private static DecimalFormat df2 = new DecimalFormat("#.##");
 
-    private APICall apiCallFMP;
-    private APICall apiCallYahoo;
     private final String TAG = "tag";
-    FragmentManager fm;
-    private int period;
 
     private ViewPager2 viewPager;
     private FragmentStateAdapter pagerAdapter;
@@ -43,55 +35,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dataBundle = new Bundle();
-        viewPager = (ViewPager2)findViewById(R.id.viewPager);
+
+        viewPager = (ViewPager2) findViewById(R.id.viewPager);
         pagerAdapter = new ViewPagerAdapter(MainActivity.this);
         viewPager.setAdapter(pagerAdapter);
 
-        final CompanyViewModel companyViewModel =new ViewModelProvider(this).get(CompanyViewModel.class);
-
-
-//        Retrofit retrofitFMP = new Retrofit.Builder()
-//                .baseUrl("https://financialmodelingprep.com/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//        Retrofit retrofitYahoo = new Retrofit.Builder()
-//                .baseUrl("https://apidojo-yahoo-finance-v1.p.rapidapi.com/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-
-        // TODO: ViewPager2 Fragments
-//        viewPager = (ViewPager2) findViewById(R.id.viewPager);
-//        pagerAdapter = new ViewPagerAdapter(MainActivity.this);
-//        viewPager.setAdapter(pagerAdapter);
-
-//        fm = getSupportFragmentManager();
-//        createOverViewFragment();
-
-//        apiCallFMP = retrofitFMP.create(APICall.class);
-//        apiCallYahoo = retrofitYahoo.create(APICall.class);
+        final CompanyViewModel companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
 
         searchView = findViewById(R.id.searchView);
+        homeButton = findViewById(R.id.homeButton);
+
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewPager.setCurrentItem(0);
+            }
+        });
 
         searchView.setQueryHint("Search");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                responses = 0;
-
-                String tickerSymbol = searchView.getQuery().toString().toUpperCase();
-
                 try {
                     companyViewModel.setTickerSymbol(searchView.getQuery().toString().toUpperCase());
                     searchView.setQuery("", false);
                     searchView.setIconified(true);
-                    companyViewModel.getCompanyLiveData().observe(MainActivity.this, new Observer<CompanyData>() {
-                        @Override
-                        public void onChanged(CompanyData companyData) {
-                            viewPager.setCurrentItem(1);
-                        }
-                    });
+
                 } catch (Exception e) {
                     Log.d(TAG, "onQueryTextSubmit:  Exception" + Arrays.toString(e.getStackTrace()));
                 }
@@ -105,14 +74,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        homeButton = findViewById(R.id.homeButton);
-//        homeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                createOverViewFragment();
-//            }
-//        });
-    }
+        companyViewModel.getCompanyLiveData().observe(MainActivity.this, new Observer<CompanyData>() {
+            @Override
+            public void onChanged(CompanyData companyData) {
+                viewPager.setCurrentItem(1);
+            }
+        });
+
 
 //    private void getProfileData(String tickerSymbol) {
 //        Call<List<Profile>> callProfileData = apiCallFMP.getProfileData(tickerSymbol);
@@ -353,5 +321,5 @@ public class MainActivity extends AppCompatActivity {
 //                .replace(R.id.fragmentLayout, fragment)
 //                .commit();
 //    }
-
+    }
 }

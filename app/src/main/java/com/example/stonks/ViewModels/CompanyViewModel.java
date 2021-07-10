@@ -1,4 +1,4 @@
-package com.example.stonks;
+package com.example.stonks.ViewModels;
 
 import android.util.Log;
 
@@ -13,9 +13,9 @@ import com.example.stonks.Repository.Repository;
 public class CompanyViewModel extends ViewModel {
 
     private final String TAG = "tag";
-    private SavedStateHandle savedStateHandle;
-    private Repository repository = Repository.getInstance();
-    private LiveData<CompanyData> companyLiveData;
+    private final SavedStateHandle savedStateHandle;
+    private final Repository repository = Repository.getInstance();
+    private final LiveData<CompanyData> companyLiveData;
 
     public CompanyViewModel(SavedStateHandle savedStateHandle) {
         super();

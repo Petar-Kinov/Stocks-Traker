@@ -6,14 +6,16 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.stonks.APICall;
-import com.example.stonks.Fragments.CompanyFragment;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.CashFlowStatement;
+import com.example.stonks.RequestClasses.FinantialModelingPrep.DailyMover;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.Growth;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.Profile;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.Quote;
+import com.example.stonks.RequestClasses.FinantialModelingPrep.Sector;
 import com.example.stonks.RequestClasses.YahooFinance.Analysis;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,6 +30,8 @@ public class Repository {
     private APICall fmpApiCall;
     private APICall yahooApiCall;
     private MutableLiveData<CompanyData> companyDataMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<DailyMover>> dailyMoverMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<Sector>> sectorMutableLiveData = new MutableLiveData<>();
     private static Retrofit retrofitFMP = null;
     private static Retrofit retrofitYahoo = null;
     private Bundle dataBundle;
@@ -166,7 +170,6 @@ public class Repository {
                     companyDataMutableLiveData.setValue(companyData);
                 }
             }
-
             @Override
             public void onFailure(Call<List<Quote>> call, Throwable t) {
                 Log.d(TAG, "onFailure: Get Quote Data call failed : "  + "\n " + t.toString());
@@ -181,17 +184,39 @@ public class Repository {
                 if (!response.isSuccessful() || response.body() == null){
                     Log.d(TAG, "onResponse: Get Analysis Data failed");
                 } else {
+                    String jsonResponse = new Gson().toJson(response.body());
                     responses++;
+//                    JSONObject jsonObject = null;
+//                    try {
+//                        jsonObject = new JSONObject(jsonResponse );
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+
                     // Financial Data
-                    companyData.setProfitMargin(response.body().getFinancialData().getProfitMargins().getRaw());
-                    companyData.setGrossMargin(response.body().getFinancialData().getGrossMargins().getRaw());
-                    companyData.setReturnOnAssets(response.body().getFinancialData().getReturnOnAssets().getRaw());
-                    companyData.setPriceTargetLow(response.body().getFinancialData().getTargetLowPrice().getRaw());
-                    companyData.setPriceTargetMedian(response.body().getFinancialData().getTargetMedianPrice().getRaw());
-                    companyData.setPriceTargetHigh(response.body().getFinancialData().getTargetHighPrice().getRaw());
+//                    String financial = jsonObject.optString("financialData");
+//                    if (TextUtils.isEmpty(financial)) {
+//                        Log.d(TAG, "onResponse: financial data does not exist");
+//                    } else {
+                        companyData.setProfitMargin(response.body().getFinancialData().getProfitMargins().getRaw());
+                        companyData.setGrossMargin(response.body().getFinancialData().getGrossMargins().getRaw());
+                        companyData.setReturnOnAssets(response.body().getFinancialData().getReturnOnAssets().getRaw());
+                        companyData.setPriceTargetLow(response.body().getFinancialData().getTargetLowPrice().getRaw());
+                        companyData.setPriceTargetMedian(response.body().getFinancialData().getTargetMedianPrice().getRaw());
+                        companyData.setPriceTargetHigh(response.body().getFinancialData().getTargetHighPrice().getRaw());
+                    }
+
                     // Earnings Trend Data
-                    companyData.setGrowthAnalysis(response.body().getEarningsTrend().getTrend().get(0).getGrowth().getRaw());
-                }
+//                    String earnigns = jsonObject.optString("earningsTrend");
+//                    String trend = jsonObject.optString("trend");
+//                    if (TextUtils.isEmpty(earnigns) && TextUtils.isEmpty(trend)) {
+//                        Log.d(TAG, "onResponse: earningsTrend does not exist in the response");
+//                    } else {
+//                        Log.d(TAG, "onResponse: earningsTrend exists in the response");
+                Log.d(TAG, "onResponse: growth analysis is " + response.body().getEarningsTrend().getTrend().get(4).getGrowth().getRaw() );
+                        companyData.setGrowthAnalysis(response.body().getEarningsTrend().getTrend().get(4).getGrowth().getRaw());
+//                    }
+//                }
 
                 if (responses >= responsesNeeded){
                     companyDataMutableLiveData.setValue(companyData);
@@ -203,8 +228,64 @@ public class Repository {
                 Log.d(TAG, "onFailure: Get Analysis Data call failed : "  + "\n " + t.toString());
             }
         });
-
         return companyDataMutableLiveData;
     }
 
+    public LiveData<ArrayList<DailyMover>> getDailyMovers(String move) {
+        fmpApiCall = getFMPApiClient().create(APICall.class);
+        ArrayList<DailyMover> dailyMoverArrayList = new ArrayList<>();
+
+        Call<List<DailyMover>> getGainer = fmpApiCall.getMovers(move);
+        getGainer.enqueue(new Callback<List<DailyMover>>() {
+            @Override
+            public void onResponse(Call<List<DailyMover>> call, Response<List<DailyMover>> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.d(TAG, "onResponse: Get Gainers Data failed");
+                } else {
+                    for (int i = 0; i < response.body().size(); i++) {
+
+                        // TODO Replace this code with dailyMoverArrayList.add(response.body().get(i);
+                        DailyMover dailyMover = new DailyMover();
+                        dailyMover.setCompanyName(response.body().get(i).getCompanyName());
+                        dailyMover.setPrice(response.body().get(i).getPrice());
+                        dailyMover.setChangesPercentage(response.body().get(i).getChangesPercentage());
+                        dailyMover.setTicker(response.body().get(i).getTicker());
+                        dailyMoverArrayList.add(dailyMover);
+                    }
+                    dailyMoverMutableLiveData.setValue(dailyMoverArrayList);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<DailyMover>> call, Throwable t) {
+                Log.d(TAG, "onFailure: Get Gainer call failed " + t.toString());
+            }
+        });
+        return dailyMoverMutableLiveData;
+    }
+
+    public LiveData<ArrayList<Sector>> getSectors() {
+        fmpApiCall = getFMPApiClient().create(APICall.class);
+        ArrayList<Sector> sectorArrayList = new ArrayList<>();
+
+        Call<List<Sector>> getSectorData = fmpApiCall.getSectors();
+        getSectorData.enqueue(new Callback<List<Sector>>() {
+            @Override
+            public void onResponse(Call<List<Sector>> call, Response<List<Sector>> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.d(TAG, "onResponse: Get Sectors Data failed");
+                } else {
+                    for (int i = 0; i < response.body().size(); i++){
+                        sectorArrayList.add(response.body().get(i));
+                    }
+                    sectorMutableLiveData.setValue(sectorArrayList);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Sector>> call, Throwable t) {
+                Log.d(TAG, "onFailure: Get Sectors call failed");
+            }
+        });
+        return sectorMutableLiveData;
+    }
 }

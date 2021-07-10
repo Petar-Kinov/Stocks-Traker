@@ -1,13 +1,15 @@
-package com.example.stonks;
+package com.example.stonks.Repository;
 
 //import com.example.stockanalyzer.ModelClasses.CashFlowStatement;
 //import com.example.stockanalyzer.ModelClasses.Profile;
 //import com.example.stockanalyzer.ModelClasses.Quote;
 
+import com.example.stonks.RequestClasses.FinantialModelingPrep.DailyMover;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.CashFlowStatement;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.Growth;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.Profile;
 import com.example.stonks.RequestClasses.FinantialModelingPrep.Quote;
+import com.example.stonks.RequestClasses.FinantialModelingPrep.Sector;
 import com.example.stonks.RequestClasses.YahooFinance.Analysis;
 
 import java.util.List;
@@ -36,5 +38,15 @@ public interface APICall {
 
     @GET("api/v3/quote/{TickerSymbol}?apikey=2e6377dc045ea87d235e6edc6ea9f777")
     Call<List<Quote>> getQuoteData(@Path("TickerSymbol") String tickerSymbol);
+
+    @GET("api/v3/{move}?apikey=d62d1e70cf18d498957c84390c528131")
+    Call<List<DailyMover>> getMovers(@Path("move") String move);
+
+    @GET("api/v3/sectors-performance?apikey=8ccad4136b7e3d27222af188d39d86b6")
+    Call<List<Sector>> getSectors();
+
+//    @GET("api/v3/losers?apikey=a0014e64a4e804a84a1003a3ebb3e71d")
+//    Call<List<DailyMover>> getLosers();
+
 
 }

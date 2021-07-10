@@ -1,6 +1,5 @@
 package com.example.stonks.Fragments;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -17,15 +16,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.stonks.CompanyViewModel;
+import com.example.stonks.ViewModels.CompanyViewModel;
 import com.example.stonks.R;
 import com.example.stonks.Repository.CompanyData;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Currency;
-import java.util.Locale;
-import java.util.Objects;
 
 ///**
 // * A simple {@link Fragment} subclass.
@@ -116,7 +111,9 @@ public class CompanyFragment extends Fragment {
 //        currencyFormat.setCurrency(Currency.getInstance("USD"));
 
         name = view.findViewById(R.id.companyNameValue);
+        name.setSelected(true);
         industry = view.findViewById(R.id.companyIndustryValue);
+        industry.setSelected(true);
         image = view.findViewById(R.id.companyImage);
         price = view.findViewById(R.id.priceValue);
         marketCap = view.findViewById(R.id.marketCapValue);
@@ -150,6 +147,11 @@ public class CompanyFragment extends Fragment {
                 price.setText(numberConverter(companyData.getPrice()));
                 marketCap.setText(numberConverter(companyData.getMarketCap()));
                 if (companyData.getPeRatio() != 0.0){
+                    if (companyData.getPeRatio() < 20){
+                        peRatio.setTextColor(getResources().getColor(R.color.green));
+                    } else {
+                        peRatio.setTextColor(getResources().getColor(R.color.red));
+                    }
                     peRatio.setText(df2.format(companyData.getPeRatio()));
                 } else {
                     peRatio.setText(getResources().getString(R.string.Dashes));
@@ -280,7 +282,6 @@ public class CompanyFragment extends Fragment {
         } else if (companyNumber < targetNumber){
             textView.setTextColor(getResources().getColor(R.color.red));
         }
-        Log.d(TAG, "setPercentText: company number is "  + companyNumber);
         textView.setText(String.format(getResources().getString(R.string.number_percent) , df2Percent.format(companyNumber)));
     }
 
